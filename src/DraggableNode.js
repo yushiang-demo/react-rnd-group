@@ -6,7 +6,7 @@ const style = {
   alignItems: "center",
   justifyContent: "center",
   border: "solid 1px #ddd",
-  background: "#f0f0f0"
+  background: "#f0f0f0",
 };
 
 export default function DraggableNode({
@@ -17,7 +17,7 @@ export default function DraggableNode({
   basePositionMatrix,
   baseScaleMatrix,
   update,
-  children
+  children,
 }) {
   const changePosition = (e, d) => {
     setPosition(d.x, d.y, basePositionMatrix);

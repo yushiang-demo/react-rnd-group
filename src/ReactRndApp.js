@@ -1,7 +1,4 @@
-// run this to find difference between offical nested elements and mine implmenetation.
-
-import React, { useState } from "react";
-import { render } from "react-dom";
+import React from "react";
 import { Rnd } from "react-rnd";
 
 const style = {
@@ -9,10 +6,16 @@ const style = {
   alignItems: "center",
   justifyContent: "center",
   border: "solid 1px #ddd",
-  background: "#f0f0f0"
+  background: "#f0f0f0",
 };
 
-const App = () => {
+const childStyle = {
+  width: "100%",
+  height: "100%",
+  cursor: "move",
+};
+
+const ReactRndApp = () => {
   return (
     <Rnd
       style={style}
@@ -23,12 +26,14 @@ const App = () => {
         height: 200,
         scaleX: 1,
         scaleY: 1,
-        rotateAngle: 0
+        rotateAngle: 0,
       }}
       dragHandleClassName="drag-handle"
       cancel=".child-draggable"
     >
-      <div className="drag-handle">Parent Element</div>
+      <div className="drag-handle" style={childStyle}>
+        react-rnd parent
+      </div>
       <Rnd
         style={style}
         default={{
@@ -38,15 +43,17 @@ const App = () => {
           height: 150,
           scaleX: 1,
           scaleY: 1,
-          rotateAngle: 0
+          rotateAngle: 0,
         }}
         dragHandleClassName="drag-handle"
         className="child-draggable"
       >
-        <div className="drag-handle">Child Element</div>
+        <div className="drag-handle" style={childStyle}>
+          react-rnd child
+        </div>
       </Rnd>
     </Rnd>
   );
 };
 
-render(<App />, document.getElementById("root"));
+export default ReactRndApp;

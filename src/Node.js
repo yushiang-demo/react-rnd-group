@@ -15,7 +15,7 @@ export default function Node(coord) {
 
     mat3.fromScaling(scaleMat, [
       width / displaySize[0],
-      height / displaySize[1]
+      height / displaySize[1],
     ]);
   };
 
@@ -64,6 +64,6 @@ export default function Node(coord) {
     getPosition,
     getSize,
     getPositionMatrix,
-    getScaleMatrix
+    getScaleMatrix,
   };
 }

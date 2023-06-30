@@ -16,10 +16,10 @@ export default function NodeTree({ nodes }) {
     node,
     children,
     basePositionMatrix,
-    baseScaleMatrix
+    baseScaleMatrix,
   }) => {
     return (
-      <>
+      <React.Fragment>
         <DraggableNode
           {...node}
           update={update}
@@ -39,10 +39,10 @@ export default function NodeTree({ nodes }) {
               baseScaleMatrix: multiplyMat3(
                 baseScaleMatrix,
                 node.getScaleMatrix()
-              )
+              ),
             })
           )}
-      </>
+      </React.Fragment>
     );
   };
 
@@ -53,7 +53,7 @@ export default function NodeTree({ nodes }) {
     getNodes({
       ...nodes,
       basePositionMatrix: identity,
-      baseScaleMatrix: identity
+      baseScaleMatrix: identity,
     })
   );
 }
