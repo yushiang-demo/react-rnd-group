@@ -24,11 +24,12 @@ export default function DraggableNode({
     update();
   };
 
-  const onResize = (e, direction, ref) => {
+  const onResize = (e, direction, ref, delta, position) => {
     const width = parseInt(ref.style.width, 10);
     const height = parseInt(ref.style.height, 10);
     setSize(width, height, baseScaleMatrix);
     update();
+    changePosition(null, position);
   };
 
   const position = getPosition(basePositionMatrix);
