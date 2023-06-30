@@ -6,11 +6,11 @@
   "homepage": "https://codesandbox.io/s/new",
   "main": "src/index.js",
   "dependencies": {
-    "gl-matrix": "3.4.3",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "react-rnd": "10.1.9",
-    "react-scripts": "1.1.0"
+    "gl-matrix": "^3.4.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-rnd": "^10.4.1",
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {},
   "scripts": {
@@ -18,5 +18,17 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
