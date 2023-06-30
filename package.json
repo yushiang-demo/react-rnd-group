@@ -1,0 +1,22 @@
+{
+  "name": "react-rnd-group",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://codesandbox.io/s/new",
+  "main": "src/index.js",
+  "dependencies": {
+    "gl-matrix": "3.4.3",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-rnd": "10.1.9",
+    "react-scripts": "1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
