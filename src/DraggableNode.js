@@ -14,26 +14,24 @@ export default function DraggableNode({
   setPosition,
   getPosition,
   getSize,
-  basePositionMatrix,
-  baseScaleMatrix,
   update,
   children,
 }) {
   const changePosition = (e, d) => {
-    setPosition(d.x, d.y, basePositionMatrix);
+    setPosition(d.x, d.y);
     update();
   };
 
   const onResize = (e, direction, ref, delta, position) => {
     const width = parseInt(ref.style.width, 10);
     const height = parseInt(ref.style.height, 10);
-    setSize(width, height, baseScaleMatrix);
+    setSize(width, height);
     update();
     changePosition(null, position);
   };
 
-  const position = getPosition(basePositionMatrix);
-  const size = getSize(baseScaleMatrix);
+  const position = getPosition();
+  const size = getSize();
 
   return (
     <Rnd

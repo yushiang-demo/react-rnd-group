@@ -9,7 +9,8 @@ export default function Node(coord) {
   const translateMat = mat3.create();
   mat3.fromTranslation(translateMat, [coord[0], coord[1]]);
 
-  const setSize = (width, height, baseMatrix) => {
+  const setSize = (width, height) => {
+    const baseMatrix = getParentSizeMatrix();
     const displaySize = vec2.create();
     vec2.transformMat3(displaySize, rightBottomCoord, baseMatrix);
 
@@ -19,7 +20,8 @@ export default function Node(coord) {
     ]);
   };
 
-  const setPosition = (x, y, baseMatrix) => {
+  const setPosition = (x, y) => {
+    const baseMatrix = getParentTranslateMatrix();
     const position = vec2.fromValues(x, y);
 
     const inverseMatrix = mat3.create();
@@ -29,41 +31,73 @@ export default function Node(coord) {
     mat3.fromTranslation(translateMat, position);
   };
 
-  const getPositionMatrix = () => {
-    const result = mat3.create();
-    mat3.multiply(result, translateMat, scaleMat);
-    return result;
+  const getParentTranslateMatrix = () => {
+    const matrix = mat3.create();
+    mat3.identity(matrix);
+    if (parent) {
+      mat3.multiply(matrix, parent.getTranslateMatrix(), matrix);
+    }
+
+    return matrix;
   };
 
-  const getPosition = (base) => {
-    const result = mat3.create();
-    mat3.multiply(result, base, getPositionMatrix());
+  const getTranslateMatrix = () => {
+    const translate = mat3.create();
+    mat3.multiply(translate, translateMat, scaleMat);
 
+    if (parent) {
+      mat3.multiply(translate, getParentTranslateMatrix(), translate);
+    }
+
+    return translate;
+  };
+
+  const getPosition = () => {
     const position = vec2.create();
-    vec2.transformMat3(position, leftTopCoord, result);
+    vec2.transformMat3(position, leftTopCoord, getTranslateMatrix());
 
     return position;
   };
 
-  const getScaleMatrix = () => {
-    return scaleMat;
+  const getParentSizeMatrix = () => {
+    const matrix = mat3.create();
+    mat3.identity(matrix);
+    if (parent) {
+      mat3.multiply(matrix, parent.getSizeMatrix(), matrix);
+    }
+
+    return matrix;
   };
 
-  const getSize = (base) => {
-    const result = mat3.create();
-    mat3.multiply(result, base, getScaleMatrix());
+  const getSizeMatrix = () => {
+    const scale = mat3.create();
+    mat3.copy(scale, scaleMat);
 
+    if (parent) {
+      mat3.multiply(scale, getParentSizeMatrix(), scale);
+    }
+
+    return scale;
+  };
+
+  const getSize = () => {
     const size = vec2.create();
-    vec2.transformMat3(size, rightBottomCoord, result);
+    vec2.transformMat3(size, rightBottomCoord, getSizeMatrix());
     return size;
   };
 
+  let parent = null;
+  const setParent = (node) => {
+    parent = node;
+  };
+
   return {
+    setParent,
     setSize,
     setPosition,
     getPosition,
     getSize,
-    getPositionMatrix,
-    getScaleMatrix,
+    getTranslateMatrix,
+    getSizeMatrix,
   };
 }

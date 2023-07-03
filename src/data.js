@@ -1,44 +1,18 @@
-import React from "react";
 import Node from "./Node";
 
 const group = { ...Node([300, 0, 0, 0]), body: () => null };
 
-const node1 = { ...Node([100, 30, 100, 100]), body: () => "Custom Parent A" };
-const node2 = { ...Node([100, 100, 100, 100]), body: () => "Custom Child A" };
+const node1 = { ...Node([100, 30, 300, 300]), body: () => "Custom Parent A" };
+const node2 = { ...Node([50, 50, 200, 200]), body: () => "Custom Child A" };
 const node3 = {
-  ...Node([110, 0, 100, 100]),
+  ...Node([30, 50, 50, 50]),
   body: () => "Custom Grandchild A",
 };
-const node4 = { ...Node([210, 0, 100, 100]), body: () => "Custom Parent A" };
-const node5 = { ...Node([110, 0, 100, 100]), body: () => "Custom Child B" };
 
-const nodes = [
-  {
-    node: group,
-    children: [
-      {
-        node: node1,
-        children: [
-          {
-            node: node2,
-            children: [
-              {
-                node: node3,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        node: node4,
-        children: [
-          {
-            node: node5,
-          },
-        ],
-      },
-    ],
-  },
-];
+node3.setParent(node2);
+node2.setParent(node1);
+node1.setParent(group);
+
+const nodes = [node1, node2, node3];
 
 export default nodes;
