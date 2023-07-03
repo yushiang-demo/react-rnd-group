@@ -1,20 +1,17 @@
 import React from "react";
-import { render } from "react-dom";
-import NodeTree from "./NodeTree";
+import { createRoot } from "react-dom/client";
+import Nodes from "./Nodes";
 import nodes from "./data";
-import ReactRndApp from "./ReactRndApp";
 
 function App() {
   // why here need position abosolute wrapper:
   // https://github.com/bokuweb/react-rnd/issues/738
   return (
-    <>
-      <div style={{ position: "absolute" }}>
-        <NodeTree nodes={nodes} />
-      </div>
-      <ReactRndApp />
-    </>
+    <div style={{ position: "absolute" }}>
+      <Nodes nodes={nodes} />
+    </div>
   );
 }
 
-render(<App />, document.getElementById("root"));
+const rootElement = document.getElementById("root");
+createRoot(rootElement).render(<App />);
