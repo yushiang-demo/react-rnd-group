@@ -16,15 +16,16 @@ export default function DraggableNode({
   getSize,
   update,
   children,
+  scale,
 }) {
   const changePosition = (e, d) => {
-    setPosition(d.x, d.y);
+    setPosition(d.x / scale, d.y / scale);
     update();
   };
 
   const onResize = (e, direction, ref, delta, position) => {
-    const width = parseInt(ref.style.width, 10);
-    const height = parseInt(ref.style.height, 10);
+    const width = parseInt(ref.style.width, 10) / scale;
+    const height = parseInt(ref.style.height, 10) / scale;
     setSize(width, height);
     update();
     changePosition(null, position);
@@ -36,8 +37,8 @@ export default function DraggableNode({
   return (
     <Rnd
       style={style}
-      size={{ width: size[0], height: size[1] }}
-      position={{ x: position[0], y: position[1] }}
+      size={{ width: size[0] * scale, height: size[1] * scale }}
+      position={{ x: position[0] * scale, y: position[1] * scale }}
       onDrag={changePosition}
       onDragStop={changePosition}
       onResize={onResize}
