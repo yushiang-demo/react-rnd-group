@@ -1,4 +1,5 @@
 import { vec2, mat3 } from "gl-matrix";
+import { v4 as uuid } from "uuid";
 
 export default function Node(coord) {
   const leftTopCoord = vec2.fromValues(0, 0);
@@ -106,8 +107,14 @@ export default function Node(coord) {
     parent = node;
   };
 
+  const getParent = () => {
+    return parent;
+  };
+
   return {
+    id: uuid(),
     setParent,
+    getParent,
     setSize,
     setPosition,
     getPosition,
