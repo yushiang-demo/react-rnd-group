@@ -88,6 +88,21 @@ export default function Node(coord) {
 
   let parent = null;
   const setParent = (node) => {
+    if (parent) {
+      mat3.multiply(translateMat, getParentTranslateMatrix(), translateMat);
+      mat3.multiply(scaleMat, getParentSizeMatrix(), scaleMat);
+    }
+
+    if (node) {
+      const inverseParentTranslateMatrix = mat3.create();
+      mat3.invert(inverseParentTranslateMatrix, node.getTranslateMatrix());
+      mat3.multiply(translateMat, inverseParentTranslateMatrix, translateMat);
+
+      const inverseParentSizeMatrix = mat3.create();
+      mat3.invert(inverseParentSizeMatrix, node.getSizeMatrix());
+      mat3.multiply(scaleMat, inverseParentSizeMatrix, scaleMat);
+    }
+
     parent = node;
   };
 
