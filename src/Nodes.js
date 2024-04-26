@@ -94,6 +94,8 @@ export default function Nodes({ nodes }) {
   };
 
   return (
+    // why here need position absolute wrapper:
+    // https://github.com/bokuweb/react-rnd/issues/738
     <div style={{ position: "absolute", transform: `scale(${scale})` }}>
       {nodes
         .filter((node) => !focusIds.includes(node.id))
