@@ -6,11 +6,7 @@ import nodes from "./data";
 function App() {
   // why here need position abosolute wrapper:
   // https://github.com/bokuweb/react-rnd/issues/738
-  return (
-    <div style={{ position: "absolute" }}>
-      <Nodes nodes={nodes} />
-    </div>
-  );
+  return <Nodes nodes={nodes} />;
 }
 
 const rootElement = document.getElementById("root");
