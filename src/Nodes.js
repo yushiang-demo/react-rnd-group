@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Node from "./Node";
 import useForceUpdate from "./useForceUpdate";
 import DraggableNode from "./DraggableNode";
@@ -39,6 +39,7 @@ const FixNode = ({ node, onClick }) => (
 );
 
 export default function Nodes({ nodes }) {
+  const containerRef = useRef(null);
   const scale = useWindowScale();
   const [controls, setControls] = useState(null);
   const [focusIds, setFocusIds] = useState([]);
@@ -83,35 +84,37 @@ export default function Nodes({ nodes }) {
   };
 
   const onClick = (id) => {
-    const newFocusIds = (() => {
-      if (focusIds.includes(id)) {
-        return focusIds.filter((focusId) => focusId !== id);
-      }
-      return [...focusIds, id];
-    })();
+    const newFocusIds = [...focusIds, id];
     setFocusIds(newFocusIds);
     setControlsByIds(newFocusIds);
   };
 
+  useEffect(() => {
+    const onClick = (e) => {
+      if (!containerRef.current.contains(e.target)) {
+        setControls(null);
+        setFocusIds([]);
+      }
+    };
+    document.addEventListener("pointerdown", onClick);
+    return () => document.removeEventListener("pointerdown", onClick);
+  }, []);
+
   return (
     // why here need position absolute wrapper:
     // https://github.com/bokuweb/react-rnd/issues/738
-    <div style={{ position: "absolute", transform: `scale(${scale})` }}>
-      {nodes
-        .filter((node) => !focusIds.includes(node.id))
-        .map((node, index) => (
-          <FixNode key={index} node={node} onClick={onClick} />
-        ))}
+    <div
+      ref={containerRef}
+      style={{ position: "absolute", transform: `scale(${scale})` }}
+    >
+      {nodes.map((node, index) => (
+        <FixNode key={index} node={node} onClick={onClick} />
+      ))}
       {controls && (
         <DraggableNode {...controls} update={update} scale={scale}>
           <FocusNode />
         </DraggableNode>
       )}
-      {nodes
-        .filter((node) => focusIds.includes(node.id))
-        .map((node, index) => (
-          <FixNode key={index} node={node} onClick={onClick} />
-        ))}
     </div>
   );
 }
