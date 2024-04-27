@@ -1,0 +1,33 @@
+name: DeployGihubPage
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          yarn install
+          yarn build
+          touch ./build/.nojekyll
+          git config --global user.email "github@example.com"
+          git config --global user.name "git workflows"
+          git add build/ -f
+          git commit -m "Deploy gh-pages"          
+          #git subtree push --prefix build origin gh-pages
+          git subtree split --prefix build -b gh-pages
+          git push -f origin gh-pages:gh-pages
+          git branch -D gh-pages

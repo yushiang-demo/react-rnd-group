@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "keywords": [],
-  "homepage": ".",
+  "homepage": "/react-rnd-group",
   "main": "src/index.js",
   "dependencies": {
     "gl-matrix": "^3.4.3",
