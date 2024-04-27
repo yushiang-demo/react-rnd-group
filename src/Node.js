@@ -3,22 +3,31 @@ import { v4 as uuid } from "uuid";
 
 export default function Node(coord) {
   const leftTopCoord = vec2.fromValues(0, 0);
-  const rightBottomCoord = vec2.fromValues(coord[2], coord[3]);
+  const rightBottomCoord = vec2.fromValues(1, 1);
 
-  const scaleMat = mat3.create();
-  mat3.fromScaling(scaleMat, [1, 1]);
-  const translateMat = mat3.create();
-  mat3.fromTranslation(translateMat, [coord[0], coord[1]]);
+  const localMatrix = mat3.create();
+  mat3.set(localMatrix, coord[2], 0, 0, 0, coord[3], 0, coord[0], coord[1], 1);
 
   const setSize = (width, height) => {
     const baseMatrix = getParentSizeMatrix();
-    const displaySize = vec2.create();
-    vec2.transformMat3(displaySize, rightBottomCoord, baseMatrix);
+    const size = vec2.fromValues(width, height);
 
-    mat3.fromScaling(scaleMat, [
-      width / displaySize[0],
-      height / displaySize[1],
-    ]);
+    const inverseMatrix = mat3.create();
+    mat3.invert(inverseMatrix, baseMatrix);
+    vec2.transformMat3(size, size, inverseMatrix);
+
+    mat3.set(
+      localMatrix,
+      size[0],
+      0,
+      0,
+      0,
+      size[1],
+      0,
+      localMatrix[6],
+      localMatrix[7],
+      1
+    );
   };
 
   const setPosition = (x, y) => {
@@ -29,7 +38,18 @@ export default function Node(coord) {
     mat3.invert(inverseMatrix, baseMatrix);
     vec2.transformMat3(position, position, inverseMatrix);
 
-    mat3.fromTranslation(translateMat, position);
+    mat3.set(
+      localMatrix,
+      localMatrix[0],
+      0,
+      0,
+      0,
+      localMatrix[4],
+      0,
+      position[0],
+      position[1],
+      1
+    );
   };
 
   const getParentTranslateMatrix = () => {
@@ -44,7 +64,7 @@ export default function Node(coord) {
 
   const getTranslateMatrix = () => {
     const translate = mat3.create();
-    mat3.multiply(translate, translateMat, scaleMat);
+    mat3.copy(translate, localMatrix);
 
     if (parent) {
       mat3.multiply(translate, getParentTranslateMatrix(), translate);
@@ -72,7 +92,7 @@ export default function Node(coord) {
 
   const getSizeMatrix = () => {
     const scale = mat3.create();
-    mat3.copy(scale, scaleMat);
+    mat3.fromScaling(scale, [localMatrix[0], localMatrix[4]]);
 
     if (parent) {
       mat3.multiply(scale, getParentSizeMatrix(), scale);
@@ -88,23 +108,20 @@ export default function Node(coord) {
   };
 
   let parent = null;
-  const setParent = (node) => {
-    if (parent) {
-      mat3.multiply(translateMat, getParentTranslateMatrix(), translateMat);
-      mat3.multiply(scaleMat, getParentSizeMatrix(), scaleMat);
+  const setParent = (newParent) => {
+    const currentTranslateMat = getTranslateMatrix();
+    const inverseParentTranslateMatrix = mat3.create();
+    mat3.identity(inverseParentTranslateMatrix);
+    if (newParent) {
+      mat3.invert(inverseParentTranslateMatrix, newParent.getTranslateMatrix());
     }
+    mat3.multiply(
+      localMatrix,
+      inverseParentTranslateMatrix,
+      currentTranslateMat
+    );
 
-    if (node) {
-      const inverseParentTranslateMatrix = mat3.create();
-      mat3.invert(inverseParentTranslateMatrix, node.getTranslateMatrix());
-      mat3.multiply(translateMat, inverseParentTranslateMatrix, translateMat);
-
-      const inverseParentSizeMatrix = mat3.create();
-      mat3.invert(inverseParentSizeMatrix, node.getSizeMatrix());
-      mat3.multiply(scaleMat, inverseParentSizeMatrix, scaleMat);
-    }
-
-    parent = node;
+    parent = newParent;
   };
 
   const getParent = () => {

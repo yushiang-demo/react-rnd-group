@@ -42,11 +42,10 @@ export default function Nodes({ nodes }) {
   const containerRef = useRef(null);
   const scale = useWindowScale();
   const [controls, setControls] = useState(null);
-  const [focusIds, setFocusIds] = useState([]);
+  const [focusRecord, setFocusRecord] = useState([]);
   const update = useForceUpdate();
 
-  const setControlsByIds = (newFocusIds) => {
-    const focusNodes = nodes.filter((node) => newFocusIds.includes(node.id));
+  const setControlsByIds = (focusNodes) => {
     const { minX, minY, maxX, maxY } = focusNodes.reduce(
       (prev, node) => {
         const position = node.getPosition();
@@ -84,21 +83,31 @@ export default function Nodes({ nodes }) {
   };
 
   const onClick = (id) => {
-    const newFocusIds = [...focusIds, id];
-    setFocusIds(newFocusIds);
-    setControlsByIds(newFocusIds);
+    const node = nodes.find((node) => node.id === id);
+    const newFocusRecord = [
+      ...focusRecord,
+      {
+        node: node,
+        oldParent: node.getParent(),
+      },
+    ];
+    setFocusRecord(newFocusRecord);
+    setControlsByIds(newFocusRecord.map((record) => record.node));
   };
 
   useEffect(() => {
     const onClick = (e) => {
       if (!containerRef.current.contains(e.target)) {
         setControls(null);
-        setFocusIds([]);
+        focusRecord.forEach((record) =>
+          record.node.setParent(record.oldParent)
+        );
+        setFocusRecord([]);
       }
     };
     document.addEventListener("pointerdown", onClick);
     return () => document.removeEventListener("pointerdown", onClick);
-  }, []);
+  }, [focusRecord]);
 
   return (
     // why here need position absolute wrapper:
